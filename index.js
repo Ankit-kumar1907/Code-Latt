@@ -1,6 +1,5 @@
 import express from "express";
 import bodyParser from "body-parser";
-import bcrypt from "bcrypt";
 import pg from "pg";
 
 const app = express();
@@ -10,42 +9,40 @@ const port = 3000;
 const db = new pg.Client({
   user: "postgres",
   host: "localhost",
-  database: "latt_db", // <--- CHANGE THIS from "world" to "latt_db"
-  password: "your_password", // <--- Make sure this is your real password
+  database: "latt_db", 
+  password: "your_password", // <--- Remember to put your real password here
   port: 5432,
 });
 
-// 2. Middleware (To read form data)
+// 2. Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static("public")); // If you have CSS/Images in a folder named "public"
+app.use(express.static("public")); 
 
 db.connect();
 
-// Temporary: We pretend User #1 is logged in
+// Temporary User ID
 const currentUserId = 1; 
 
 // ---------------------------------------------------------
 // ROUTE 1: The Dashboard (GET)
-// Goal: Show all subscriptions with the service logo and name
 // ---------------------------------------------------------
 app.get("/", async (req, res) => {
   try {
-    // The SQL JOIN: Combines "My Dates" (Subscriptions) with "The Logo" (Services)
     const result = await db.query(`
       SELECT 
-        subscriptions.subscription_id,
+        subscriptions.id AS subscription_id,
         subscriptions.renewal_date,
-        subscriptions.custom_price, 
+        subscriptions.amount, 
         services.name AS service_name, 
         services.logo_url
       FROM subscriptions
-      JOIN services ON subscriptions.service_id = services.service_id
+      JOIN services ON subscriptions.service_id = services.id
       WHERE subscriptions.user_id = $1
       ORDER BY subscriptions.renewal_date ASC
     `, [currentUserId]);
 
-    // Send the data to the browser (or render your EJS/HTML file)
-    // For now, let's just see the data to confirm it works:
+    // Ideally, you will use res.render("index.ejs", { list: result.rows }) later.
+    // For now, seeing the raw JSON is good for testing.
     res.json(result.rows); 
     
   } catch (err) {
@@ -56,35 +53,53 @@ app.get("/", async (req, res) => {
 
 // ---------------------------------------------------------
 // ROUTE 2: Add a Subscription (POST)
-// Goal: Take data from a form and save it to the DB
 // ---------------------------------------------------------
 app.post("/add", async (req, res) => {
-  // In your HTML form, the inputs must be named: "serviceId", "date", "price"
-  const serviceId = req.body.serviceId; 
-  const renewalDate = req.body.date;
-  const price = req.body.price;
+  // STEP 1: Grab data using the EXACT names from your HTML form
+  const serviceName = req.body.serviceName; // Matches <input name="serviceName">
+  const type = req.body.subType;            // Matches <select name="subType">
+  const currency = req.body.currency;       // Matches <select name="currency">
+  const amount = req.body.amount;           // Matches <input name="amount">
+  const paymentDate = req.body.paymentDate; // Matches <input name="paymentDate">
 
   try {
-    await db.query(`
-      INSERT INTO subscriptions (user_id, service_id, renewal_date, custom_price, status)
-      VALUES ($1, $2, $3, $4, 'active')
-    `, [currentUserId, serviceId, renewalDate, price]);
+    // STEP 2: Handle the "Service ID" problem.
+    // We have a name ("Netflix"), but we need an ID (e.g., 42).
+    
+    let serviceId;
 
-    // Success! Go back to the dashboard
+    // A. Check if this service already exists in your 'services' table
+    const checkService = await db.query(
+      "SELECT id FROM services WHERE name = $1", 
+      [serviceName]
+    );
+
+    if (checkService.rows.length > 0) {
+      // It exists! Use the existing ID.
+      serviceId = checkService.rows[0].id;
+    } else {
+      // It doesn't exist! Create it now.
+      // We set a default logo for now since we don't have one yet.
+      const newService = await db.query(
+        "INSERT INTO services (name, category, logo_url) VALUES ($1, $2, 'default.png') RETURNING id",
+        [serviceName, type]
+      );
+      serviceId = newService.rows[0].id;
+    }
+
+    // STEP 3: Now we have the ID, save the Subscription
+    await db.query(`
+      INSERT INTO subscriptions (user_id, service_id, renewal_date, amount, currency, status)
+      VALUES ($1, $2, $3, $4, $5, 'active')
+    `, [currentUserId, serviceId, paymentDate, amount, currency]);
+
+    // Success! Go back to the dashboard to see it.
     res.redirect("/");
 
   } catch (err) {
     console.error(err);
     res.status(500).send("Error adding subscription");
   }
-});
-
-app.post("/login", async (req, res) => {
-  const email = req.body.email;     // Matches name="email"
-  const password = req.body.password; // Matches name="password"
-
-  // TODO: Check database if user exists...
-  console.log("Login attempt:", email); 
 });
 
 app.listen(port, () => {

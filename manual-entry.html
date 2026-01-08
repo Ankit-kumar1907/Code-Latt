@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Subscription - LATT</title>
+    <style>
+        /* General Reset & Font */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f8fafc; /* Light Grey Background */
+            display: flex;
+            justify-content: center;
+            align-items: center; /* Centers vertically */
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* Form Container (The Card) */
+        .container {
+            width: 100%;
+            max-width: 400px; /* Mobile app width feel */
+            padding: 2rem;
+            background-color: #f8fafc; /* Keeps it blending with bg, or change to white if preferred */
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #000;
+            margin-bottom: 2.5rem;
+            font-weight: 600;
+        }
+
+        /* Labels */
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            color: #333; /* Dark Grey text */
+            font-weight: 500;
+        }
+
+        /* Inputs & Selects */
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 1.5rem;
+            border: 1px solid #cbd5e1; /* Light grey border */
+            border-radius: 8px; /* Rounded corners like the image */
+            font-size: 1rem;
+            background-color: white;
+            box-sizing: border-box;
+            color: #333;
+        }
+
+        /* Input Focus State */
+        input:focus, select:focus {
+            outline: 2px solid #000;
+            border-color: #000;
+        }
+
+        /* Flex Container for Currency & Amount row */
+        .row {
+            display: flex;
+            gap: 15px; /* Space between the two inputs */
+        }
+
+        /* Specific widths for the row items */
+        .col-currency {
+            width: 35%; /* Smaller width for Currency */
+        }
+        
+        .col-amount {
+            flex: 1; /* Amount takes remaining space */
+        }
+
+        /* The Save Button */
+        .save-btn {
+            width: 100%;
+            padding: 16px;
+            background-color: #000; /* Black button */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: opacity 0.2s;
+        }
+
+        .save-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Date Input Styling */
+        input[type="date"] {
+            color: #64748b; /* Grey text usually looks better for placeholder dates */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <h1>New Subscription</h1>
+
+        <form id="subscriptionForm">
+            
+            <label for="serviceName">Service Name</label>
+            <input type="text" id="serviceName" name="serviceName" required>
+
+            <label for="subType">Subscription Type</label>
+            <select id="subType" name="subType" required>
+                <option value="" disabled selected>Select</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="utilities">Utilities</option>
+                <option value="productivity">Productivity</option>
+                <option value="personal">Personal Care</option>
+            </select>
+
+            <div class="row">
+                <div class="col-currency">
+                    <label for="currency">Currency</label>
+                    <select id="currency" name="currency">
+                        <option value="USD">$ USD</option>
+                        <option value="EUR">€ EUR</option>
+                        <option value="INR">₹ INR</option>
+                    </select>
+                </div>
+                
+                <div class="col-amount">
+                    <label for="amount">Amount</label>
+                    <input type="number" id="amount" name="amount" min="0" step="0.01" required>
+                </div>
+            </div>
+
+            <label for="paymentDate">First Payment Date</label>
+            <input type="date" id="paymentDate" name="paymentDate" required>
+
+            <button type="submit" class="save-btn">Save Subscription</button>
+
+        </form>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
