@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latt</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f7f6;
+        }
+       /* Update these specific parts in your <style> tag */
+.welcome {
+    text-align: center;
+    padding: 40px 30px;
+    background: white;
+    border-radius: 24px; /* Smoother corners */
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08); /* Softer shadow */
+    max-width: 380px;
+    width: 90%;
+}
+
+.welcome img {
+    width: 100%; /* Makes the image feel substantial, not small */
+    height: auto;
+    max-width: 280px;
+    margin: 20px 0;
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: #1a1a1a;
+    margin: 0;
+    letter-spacing: -1px;
+}
+        .text {
+            margin-bottom: 30px;
+            color: #555;
+        }
+        .text p {
+            margin: 5px 0; /* Tightens the text spacing */
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        .get-started { background-color: #007bff; color: white; }
+        .sign-in { background-color: #f0f0f0; color: #333; }
+    </style>
+</head>
+<body>
+    <section>
+        <div class="welcome">
+            <h1>Latt</h1>
+            <img src="welcome.png" alt="Welcome Illustration">
+            
+            <div class="text">
+                <p>Manage all your subscriptions in one place</p>
+                <p>Stay in control of your data</p>
+            </div>
+
+            <button class="get-started">Get started</button>
+            <button class="sign-in">Sign in</button>
+        </div>
+    </section>
+</body>
+</html>
