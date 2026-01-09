@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latt Dashboard</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        /* General Reset & Font (Inter matches previous pages) */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 2rem 1.5rem 5rem 1.5rem; /* Padding at bottom for fixed nav */
+            color: #0f172a;
+            text-align: center;
+        }
+
+        /* Header & Greeting */
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        /* The Black Total Spending Card */
+        .spending-card {
+            background-color: #000;
+            color: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .spending-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .trend {
+            font-size: 0.9rem;
+            color: #cbd5e1; /* Light grey for percentage */
+            margin-top: 0.5rem;
+        }
+
+        /* --- STYLES FOR EMPTY STATE --- */
+        .empty-state-title {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .empty-illustration {
+            max-width: 280px;
+            width: 80%;
+            height: auto;
+            margin-bottom: 3rem;
+        }
+        .discover-btn {
+            width: 100%;
+            padding: 16px;
+            background-color: #000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            box-sizing: border-box;
+        }
+
+        /* --- STYLES FOR POPULATED STATE --- */
+        .sub-title {
+            font-size: 1.3rem;
+            text-align: left;
+            margin-bottom: 1rem;
+        }
+
+        .sub-item {
+            display: flex;
+            align-items: center;
+            background-color: #f1f5f9; /* Light grey background for items */
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            justify-content: space-between;
+        }
+
+        .sub-info-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .sub-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%; /* Circular logos */
+            object-fit: cover;
+        }
+
+        .sub-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .sub-price {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 1rem 0;
+            border-top: 1px solid #e2e8f0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        .nav-item {
+            color: #94a3b8; /* Inactive color */
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .nav-item.active {
+            color: #0f172a; /* Active color (Home icon) */
+        }
+        .material-icons {
+            font-size: 28px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Hello, <%= userName %></h1>
+
+    <section class="spending-card">
+        <h2 class="spending-title">Total Spending ₹<%= total %></h2>
+        <% if (subscriptions.length > 0) { %>
+            <p class="trend">^ 12% from last month</p>
+        <% } %>
+    </section>
+
+    <main>
+        <% /* --- EJS LOGIC: Check if subscriptions exist --- */ %>
+        <% if (subscriptions.length === 0) { %>
+
+            <h2 class="empty-state-title">No subscriptions yet!</h2>
+            
+            <img src="empty-illustration.png" alt="No subscriptions illustration" class="empty-illustration">
+            
+            <a href="/manual-entry.html" class="discover-btn">Discover Subscriptions</a>
+
+        <% } else { %>
+
+            <h2 class="sub-title">Your Subscriptions</h2>
+            
+            <div class="sub-list">
+                <% /* Loop through each subscription passed from index.js */ %>
+                <% subscriptions.forEach(function(sub) { %>
+                    <div class="sub-item">
+                        <div class="sub-info-left">
+                            <img src="<%= sub.logo_url %>" alt="<%= sub.service_name %>" class="sub-logo">
+                            <span class="sub-name"><%= sub.service_name %></span>
+                        </div>
+                        <span class="sub-price">₹ <%= parseFloat(sub.custom_price).toFixed(0) %></span>
+                    </div>
+                <% }); %>
+            </div>
+
+        <% } %>
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item"><span class="material-icons">menu</span></a>
+        <a href="#" class="nav-item"><span class="material-icons">search</span></a>
+        <a href="/" class="nav-item active"><span class="material-icons">account_circle</span></a>
+        <a href="#" class="nav-item"><span class="material-icons">receipt</span></a>
+        <a href="#" class="nav-item"><span class="material-icons">shopping_cart</span></a>
+    </nav>
+
+</body>
+</html>

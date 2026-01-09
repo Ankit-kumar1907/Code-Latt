@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enable Notifications - LATT</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .card {
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            max-width: 400px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        img {
+            max-width: 100px;
+            margin-bottom: 1.5rem;
+        }
+        h1 {
+            color: #0f172a;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            color: #64748b;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 8px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+        }
+        .allow-btn {
+            background-color: #0f172a;
+            color: white;
+        }
+        .skip-btn {
+            background-color: transparent;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        
+        <h1>Never miss a payment</h1>
+        <p>Enable notifications to get reminders before your subscriptions renew. You can change this anytime.</p>
+
+        <button class="btn allow-btn" onclick="requestPermission()">Allow Notifications</button>
+        <button class="btn skip-btn" onclick="skip()">Skip for now</button>
+    </div>
+
+    <script>
+        function requestPermission() {
+            // This triggers the browser's native permission box
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    // Permission given! Go to dashboard.
+                    window.location.href = "/"; 
+                } else {
+                    alert("Notifications were blocked. You can enable them in settings.");
+                    window.location.href = "/";
+                }
+            });
+        }
+
+        function skip() {
+            window.location.href = "/";
+        }
+    </script>
+</body>
+</html>

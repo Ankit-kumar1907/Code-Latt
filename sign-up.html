@@ -134,16 +134,20 @@
             <h1>Create your account to make<br>subscriptions easily</h1>
         </div>
 
-          <form action="/register" method="POST">
+          <form action="http://localhost:3000/register" method="POST">
             
             <div class="mail">
-                <label for="Email">Email</label>
-                <input type="email" id="Email" name="email" placeholder="you@example.com" required>
+                 <label for="FullName">Full Name</label>
+                     <input type="text" id="FullName" name="fullName" placeholder="John Doe" required>
+                    </div>
+             <div class="mail">
+                     <label for="Email">Email</label>
+                        <input type="email" id="Email" name="email" ... >
                 
                 <label for="PassWord">Password</label>
                 <input type="password" id="PassWord" name="password" placeholder="••••••••" required>
             
-                <button type="submit" class="sign-in-btn">Sign Up</button>
+                <button type="submit" class="sign-in-btn" >Sign Up</button>
             </div>
 
         </form>
