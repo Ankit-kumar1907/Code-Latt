@@ -15,17 +15,30 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const saltRounds = 10;
 
-// 3. Database Configuration
-const db = new pg.Client({
-  user: "postgres",
-  host: "localhost",
-  database: "latt_db",
-  password: process.env.DB_PASSWORD, // Securely loads from .env file
-  port: 5432,
-});
+// 3. Database Configuration (Smart Switch)
+let db;
+
+if (process.env.DATABASE_URL) {
+  // A. If running on RENDER (Cloud)
+  db = new pg.Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false
+    }
+  });
+} else {
+  // B. If running on LAPTOP (Local)
+  db = new pg.Client({
+    user: "postgres",
+    host: "localhost",
+    database: "latt_db",
+    password: process.env.DB_PASSWORD, // Make sure your .env has DB_PASSWORD
+    port: 5432,
+  });
+}
 
 // 4. Middleware & View Engine
 app.set("view engine", "ejs");
@@ -252,5 +265,5 @@ app.post("/delete", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Latt server running on port ${port}`);
+    console.log(`Server running on port ${port}`);
 });
