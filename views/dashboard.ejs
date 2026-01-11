@@ -51,7 +51,7 @@
             margin-bottom: 2rem;
         }
         .empty-illustration {
-            max-width: 280px;
+            max-width: 200x;
             width: 80%;
             height: auto;
             margin-bottom: 3rem;
@@ -150,15 +150,15 @@
         <% } %>
     </section>
 
-    <main>
+   <main>
         <% /* --- EJS LOGIC: Check if subscriptions exist --- */ %>
         <% if (subscriptions.length === 0) { %>
 
             <h2 class="empty-state-title">No subscriptions yet!</h2>
             
-            <img src="empty-illustration.png" alt="No subscriptions illustration" class="empty-illustration">
+            <img src="/empty.png" alt="No subscriptions illustration" class="empty-illustration">
             
-            <a href="/manual-entry.html" class="discover-btn">Discover Subscriptions</a>
+            <a href="/discover" class="discover-btn">Discover Subscriptions</a>
 
         <% } else { %>
 
@@ -172,18 +172,28 @@
                             <img src="<%= sub.logo_url %>" alt="<%= sub.service_name %>" class="sub-logo">
                             <span class="sub-name"><%= sub.service_name %></span>
                         </div>
-                        <span class="sub-price">₹ <%= parseFloat(sub.custom_price).toFixed(0) %></span>
-                    </div>
-                <% }); %>
-            </div>
 
-        <% } %>
-    </main>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span class="sub-price">₹ <%= parseFloat(sub.custom_price).toFixed(0) %></span>
+                            
+                            <form action="/delete" method="POST" style="margin: 0;">
+                                <input type="hidden" name="deleteItemId" value="<%= sub.subscription_id %>">
+                                <button type="submit" style="background: none; border: none; cursor: pointer; padding: 0;">
+                                    <span class="material-icons" style="font-size: 20px; color: #94a3b8;">delete</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                <% }); %>  </div>
+
+        <% } %> </main>
 
     <nav class="bottom-nav">
         <a href="#" class="nav-item"><span class="material-icons">menu</span></a>
-        <a href="#" class="nav-item"><span class="material-icons">search</span></a>
-        <a href="/" class="nav-item active"><span class="material-icons">account_circle</span></a>
+        <a href="/discover" class="nav-item"><span class="material-icons">search</span></a>
+      <a href="/logout" class="nav-item" onclick="return confirm('Log out?')">
+    <span class="material-icons" style="color: #ef4444;">logout</span>
+</a>
         <a href="#" class="nav-item"><span class="material-icons">receipt</span></a>
         <a href="#" class="nav-item"><span class="material-icons">shopping_cart</span></a>
     </nav>

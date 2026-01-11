@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover - Latt</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: #f8fafc;
+            padding: 1.5rem;
+            color: #0f172a;
+            margin: 0;
+            padding-bottom: 5rem; /* Space for bottom nav */
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 1.5rem;
+        }
+        h1 { font-size: 1.8rem; font-weight: 700; margin: 0 0 1rem 0; }
+
+        /* Search Bar */
+        .search-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        .search-input {
+            width: 100%;
+            padding: 14px 14px 14px 48px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: white;
+            box-sizing: border-box;
+        }
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        /* Categories (Horizontal Scroll) */
+        .categories {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+            /* Hide scrollbar */
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
+        }
+        .categories::-webkit-scrollbar { display: none; }
+
+        .cat-chip {
+            padding: 8px 16px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            white-space: nowrap;
+            color: #64748b;
+            cursor: pointer;
+        }
+        .cat-chip.active {
+            background: #000;
+            color: white;
+            border-color: #000;
+        }
+
+        /* Grid of Apps */
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 Columns */
+            gap: 1rem;
+        }
+
+        .app-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: transform 0.1s;
+        }
+        .app-card:active { transform: scale(0.98); }
+
+        .app-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            margin-bottom: 0.8rem;
+            object-fit: cover;
+        }
+        .app-name { font-weight: 600; font-size: 1rem; }
+        .app-cat { font-size: 0.8rem; color: #94a3b8; margin-top: 2px; }
+
+        /* Floating Manual Add Button */
+        .fab {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            background: #000;
+            color: white;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            text-decoration: none;
+        }
+        
+        /* Bottom Nav (Reused) */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 1rem 0;
+            border-top: 1px solid #e2e8f0;
+        }
+        .nav-item { color: #94a3b8; display: flex; flex-direction: column; align-items: center; text-decoration: none; }
+        .nav-item.active { color: #0f172a; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Discover</h1>
+    </div>
+
+    <div class="search-container">
+        <span class="material-icons search-icon">search</span>
+        <input type="text" class="search-input" placeholder="Search for apps...">
+    </div>
+
+    <div class="categories">
+        <div class="cat-chip active">All</div>
+        <div class="cat-chip" onclick="alert('comming soon in')">Entertainment</div>
+        <div class="cat-chip">Music</div>
+        <div class="cat-chip">Utilities</div>
+        <div class="cat-chip">Work</div>
+    </div>
+
+    <div class="app-grid">
+        <a href="/manual-entry?name=Netflix&cat=Entertainment&price=649" class="app-card">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" class="app-logo" alt="Netflix">
+            <span class="app-name">Netflix</span>
+            <span class="app-cat">Streaming</span>
+        </a>
+
+        <a href="/manual-entry?name=Spotify&cat=Entertainment&price=119" class="app-card">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" class="app-logo" alt="Spotify">
+            <span class="app-name">Spotify</span>
+            <span class="app-cat">Music</span>
+        </a>
+
+        <a href="/manual-entry?name=Google One&cat=Utilities&price=130" class="app-card">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/d/da/Google_Drive_logo_%282020%29.svg" class="app-logo" alt="Google Drive">
+            <span class="app-name">Google One</span>
+            <span class="app-cat">Cloud</span>
+        </a>
+
+        <a href="/manual-entry?name=Adobe&cat=Productivity&price=1600" class="app-card">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Creative_Cloud.svg" class="app-logo" alt="Adobe">
+            <span class="app-name">Adobe CC</span>
+            <span class="app-cat">Design</span>
+        </a>
+    </div>
+
+    <a href="/manual-entry" class="fab">
+        <span class="material-icons">add</span>
+    </a>
+
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item"><span class="material-icons">menu</span></a>
+        <a href="/Discover.html" class="nav-item active"><span class="material-icons">search</span></a>
+        <a href="/" class="nav-item"><span class="material-icons">account_circle</span></a>
+        <a href="#" class="nav-item"><span class="material-icons">receipt</span></a>
+    </nav>
+
+</body>
+</html>
