@@ -7,7 +7,10 @@ import { fileURLToPath } from "url";
 import session from "express-session";
 import env from "dotenv";
 
-// 1. Setup for EJS views folder
+// 1. Setup Environment Variables
+env.config();
+
+// 2. Setup for EJS views folder
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -15,24 +18,24 @@ const app = express();
 const port = 3000;
 const saltRounds = 10;
 
-// 2. Database Configuration
+// 3. Database Configuration
 const db = new pg.Client({
   user: "postgres",
   host: "localhost",
   database: "latt_db",
-  password: "1234", // Check your password!
+  password: process.env.DB_PASSWORD, // Securely loads from .env file
   port: 5432,
 });
 
-// 3. Middleware & View Engine
+// 4. Middleware & View Engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("assets-Code")); // Serves images
 
-// 4. Session Setup
+// 5. Session Setup
 app.use(session({
-  secret: "TOP_SECRET_WORD", // Change this in production
+  secret: process.env.SESSION_SECRET, // Securely loads from .env file
   resave: false,
   saveUninitialized: true,
   cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 day
@@ -69,7 +72,7 @@ app.get("/dashboard", async (req, res) => {
       JOIN services ON subscriptions.service_id = services.service_id
       WHERE subscriptions.user_id = $1
       ORDER BY subscriptions.renewal_date ASC
-    `, [currentUser.id || currentUser.user_id]); // <--- Checks both options!// Using .id to match your user table
+    `, [currentUser.id || currentUser.user_id]); // Checks both ID formats
 
     const subs = result.rows;
 
@@ -122,19 +125,12 @@ app.get("/manual-entry", (req, res) => {
 // ---------------------------------------------------------
 // ROUTE 5: POST - Add a Subscription
 // ---------------------------------------------------------
-// ---------------------------------------------------------
-// ROUTE 5: POST - Add a Subscription (Debug Version)
-// ---------------------------------------------------------
 app.post("/add", async (req, res) => {
   if (!req.session.user) return res.redirect("/login");
   
   const currentUser = req.session.user;
-  // SAFETY CHECK: Handle both 'id' and 'user_id' column names
+  // Handle both 'id' and 'user_id' column names
   const currentUserId = currentUser.id || currentUser.user_id;
-
-  console.log("--- DEBUGGING ADD ---");
-  console.log("User ID:", currentUserId);
-  console.log("Form Data:", req.body);
 
   const { serviceName, category, planName, price, billingCycle, renewalDate } = req.body;
 
@@ -147,16 +143,13 @@ app.post("/add", async (req, res) => {
     if (checkService.rows.length > 0) {
       // Handle 'id' OR 'service_id'
       serviceId = checkService.rows[0].id || checkService.rows[0].service_id;
-      console.log("Found existing Service ID:", serviceId);
     } else {
       // 2. Create New Service
-      // We try RETURNING * to be safe, then pick the ID
       const newService = await db.query(
         "INSERT INTO services (name, category, logo_url) VALUES ($1, $2, 'default.png') RETURNING *",
         [serviceName, category]
       );
       serviceId = newService.rows[0].id || newService.rows[0].service_id;
-      console.log("Created new Service ID:", serviceId);
     }
 
     // 3. Insert Subscription
@@ -166,14 +159,14 @@ app.post("/add", async (req, res) => {
       VALUES ($1, $2, $3, $4, $5, $6, 'Active')
     `, [currentUserId, serviceId, renewalDate, price, planName, billingCycle]);
 
-    console.log("Subscription Saved Successfully!");
     res.redirect("/dashboard");
 
   } catch (err) {
-    console.error("❌ Add Error:", err.message); // Prints the specific error
-    res.status(500).send("Error adding subscription: " + err.message);
+    console.error("Add Error:", err.message);
+    res.status(500).send("Error adding subscription");
   }
 });
+
 // ---------------------------------------------------------
 // ROUTE 6: POST - Register User
 // ---------------------------------------------------------
@@ -232,7 +225,7 @@ app.post("/login", async (req, res) => {
 });
 
 // ---------------------------------------------------------
-// ROUTE: Logout
+// ROUTE 8: Logout
 // ---------------------------------------------------------
 app.get("/logout", (req, res) => {
   req.session.destroy((err) => {
@@ -244,7 +237,7 @@ app.get("/logout", (req, res) => {
 });
 
 // ---------------------------------------------------------
-// ROUTE: Delete Subscription (POST)
+// ROUTE 9: Delete Subscription (POST)
 // ---------------------------------------------------------
 app.post("/delete", async (req, res) => {
   const idToDelete = req.body.deleteItemId;
